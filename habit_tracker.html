@@ -1,0 +1,124 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Трекер привычек</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        .tracker {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            max-width: 600px;
+            margin: auto;
+        }
+        h2 {
+            text-align: center;
+        }
+        .habit {
+            display: flex;
+            justify-content: space-between;
+            margin: 10px 0;
+        }
+        button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            margin-top: 20px;
+            background-color: #5cb85c;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #4cae4c;
+        }
+    </style>
+</head>
+<body>
+    <div class="tracker">
+        <h2>Трекер привычек</h2>
+        <div class="habit">
+            <span>Проснулась вовремя</span>
+            <input type="checkbox" id="habit1">
+        </div>
+        <div class="habit">
+            <span>Сделала 5 глубоких вдохов</span>
+            <input type="checkbox" id="habit2">
+        </div>
+        <div class="habit">
+            <span>Белковый завтрак</span>
+            <input type="checkbox" id="habit3">
+        </div>
+        <div class="habit">
+            <span>Свет утром (5-15 мин)</span>
+            <input type="checkbox" id="habit4">
+        </div>
+        <div class="habit">
+            <span>Прогулка/растяжка до обеда</span>
+            <input type="checkbox" id="habit5">
+        </div>
+        <div class="habit">
+            <span>Вода перед едой</span>
+            <input type="checkbox" id="habit6">
+        </div>
+        <div class="habit">
+            <span>45/5 рабочий цикл</span>
+            <input type="checkbox" id="habit7">
+        </div>
+        <div class="habit">
+            <span>Тренировка</span>
+            <input type="checkbox" id="habit8">
+        </div>
+        <div class="habit">
+            <span>Белки + углеводы после</span>
+            <input type="checkbox" id="habit9">
+        </div>
+        <div class="habit">
+            <span>Ужин за 2-3 ч до сна</span>
+            <input type="checkbox" id="habit10">
+        </div>
+        <div class="habit">
+            <span>Вечерняя прогулка</span>
+            <input type="checkbox" id="habit11">
+        </div>
+        <div class="habit">
+            <span>Медитация или дыхание</span>
+            <input type="checkbox" id="habit12">
+        </div>
+        <div class="habit">
+            <span>Ритуал сна (чай, книга)</span>
+            <input type="checkbox" id="habit13">
+        </div>
+        <button onclick="saveProgress()">Сохранить прогресс</button>
+    </div>
+
+    <script>
+        function saveProgress() {
+            const habits = {};
+            for (let i = 1; i <= 13; i++) {
+                habits["habit" + i] = document.getElementById("habit" + i).checked;
+            }
+            localStorage.setItem('habitTracker', JSON.stringify(habits));
+            alert('Прогресс сохранен!');
+        }
+
+        window.onload = function() {
+            const savedHabits = JSON.parse(localStorage.getItem('habitTracker'));
+            if (savedHabits) {
+                for (let i = 1; i <= 13; i++) {
+                    document.getElementById("habit" + i).checked = savedHabits["habit" + i];
+                }
+            }
+        }
+    </script>
+</body>
+</html>
