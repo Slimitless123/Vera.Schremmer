@@ -2,201 +2,123 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <title>Become Yourself 2.0 – трекер недели</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&display=swap');
-    body {
-      font-family: 'Fredoka', sans-serif;
-      background-color: #EBD5CA;
-      color: #000000;
-      margin: 0;
-      padding: 0;
-    }
-    .wrapper {
-      max-width: 800px;
-      margin: auto;
-      padding: 20px;
-    }
-    .day-slider {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 20px;
-      background: #FD5B47;
-      border-radius: 10px;
-      overflow-x: auto;
-      scrollbar-width: none;
-    }
-    .day-slider::-webkit-scrollbar { display: none; }
-    .day-button {
-      flex: 1;
-      text-align: center;
-      padding: 10px 0;
-      cursor: pointer;
-      font-weight: bold;
-      color: white;
-    }
-    .day-button.active {
-      background-color: #50AFA1;
-    }
-    .tracker {
-      background: #fff;
-      border: 4px double #F47965;
-      border-radius: 16px;
-      padding: 20px;
-      box-shadow: 0 0 18px rgba(0,0,0,0.05);
-      animation: fadeIn 0.4s ease-in-out;
-    }
-    h2 {
-      text-align: center;
-      margin-top: 0;
-    }
-    h3 {
-      margin-top: 24px;
-      color: #F47965;
-      font-size: 18px;
-    }
-    .habit {
-      display: flex;
-      justify-content: space-between;
-      margin: 10px 0;
-      padding: 6px 0;
-      border-bottom: 1px dashed #50AFA1;
-    }
-    button {
-      margin-top: 20px;
-      width: 100%;
-      padding: 12px;
-      background-color: #FD5B47;
-      color: white;
-      border: none;
-      border-radius: 10px;
-      font-size: 16px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-    .motivation {
-      text-align: center;
-      margin-top: 20px;
-      font-style: italic;
-    }
-    .calendar {
-      margin-top: 30px;
-      display: flex;
-      justify-content: space-around;
-      flex-wrap: wrap;
-    }
-    .day-circle {
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      background: #ccc;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      margin: 5px;
-      color: white;
-      font-size: 14px;
-      transition: background 0.3s ease;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <title>Трекер привычек</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        .tracker {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            max-width: 600px;
+            margin: auto;
+        }
+        h2 {
+            text-align: center;
+        }
+        .habit {
+            display: flex;
+            justify-content: space-between;
+            margin: 10px 0;
+        }
+        button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            margin-top: 20px;
+            background-color: #5cb85c;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #4cae4c;
+        }
+    </style>
 </head>
 <body>
-  <div class="wrapper">
-    <div class="day-slider" id="daySlider">
-      <div class="day-button active" onclick="switchDay(0)">Пн</div>
-      <div class="day-button" onclick="switchDay(1)">Вт</div>
-      <div class="day-button" onclick="switchDay(2)">Ср</div>
-      <div class="day-button" onclick="switchDay(3)">Чт</div>
-      <div class="day-button" onclick="switchDay(4)">Пт</div>
-      <div class="day-button" onclick="switchDay(5)">Сб</div>
-      <div class="day-button" onclick="switchDay(6)">Вс</div>
+    <div class="tracker">
+        <h2>Трекер привычек</h2>
+        <div class="habit">
+            <span>Проснулась вовремя</span>
+            <input type="checkbox" id="habit1">
+        </div>
+        <div class="habit">
+            <span>Сделала 5 глубоких вдохов</span>
+            <input type="checkbox" id="habit2">
+        </div>
+        <div class="habit">
+            <span>Белковый завтрак</span>
+            <input type="checkbox" id="habit3">
+        </div>
+        <div class="habit">
+            <span>Свет утром (5-15 мин)</span>
+            <input type="checkbox" id="habit4">
+        </div>
+        <div class="habit">
+            <span>Прогулка/растяжка до обеда</span>
+            <input type="checkbox" id="habit5">
+        </div>
+        <div class="habit">
+            <span>Вода перед едой</span>
+            <input type="checkbox" id="habit6">
+        </div>
+        <div class="habit">
+            <span>45/5 рабочий цикл</span>
+            <input type="checkbox" id="habit7">
+        </div>
+        <div class="habit">
+            <span>Тренировка</span>
+            <input type="checkbox" id="habit8">
+        </div>
+        <div class="habit">
+            <span>Белки + углеводы после</span>
+            <input type="checkbox" id="habit9">
+        </div>
+        <div class="habit">
+            <span>Ужин за 2-3 ч до сна</span>
+            <input type="checkbox" id="habit10">
+        </div>
+        <div class="habit">
+            <span>Вечерняя прогулка</span>
+            <input type="checkbox" id="habit11">
+        </div>
+        <div class="habit">
+            <span>Медитация или дыхание</span>
+            <input type="checkbox" id="habit12">
+        </div>
+        <div class="habit">
+            <span>Ритуал сна (чай, книга)</span>
+            <input type="checkbox" id="habit13">
+        </div>
+        <button onclick="saveProgress()">Сохранить прогресс</button>
     </div>
 
-    <div class="tracker" id="trackerContainer"></div>
-    <div class="calendar" id="calendarPreview"></div>
-  </div>
+    <script>
+        function saveProgress() {
+            const habits = {};
+            for (let i = 1; i <= 13; i++) {
+                habits["habit" + i] = document.getElementById("habit" + i).checked;
+            }
+            localStorage.setItem('habitTracker', JSON.stringify(habits));
+            alert('Прогресс сохранен!');
+        }
 
-  <script>
-    const days = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"];
-    const trackerData = {};
-    let currentDayIndex = 0;
-
-    const habits = [
-      "Проснулась вовремя", "5 вдохов", "Белковый завтрак", "Утренний свет",
-      "Вода перед завтраком", "Фокус 45/5 — утро",
-      "Прогулка/растяжка", "Вода перед обедом", "Фокус 45/5 — день",
-      "Тренировка", "Белки + углеводы", "Ужин заранее", "Вода перед ужином",
-      "Фокус 45/5 — вечер", "Вечерняя прогулка", "Медитация", "Ритуал сна"
-    ];
-
-    function renderHabits(dayIndex) {
-      const container = document.getElementById("trackerContainer");
-      const saved = JSON.parse(localStorage.getItem("day_" + dayIndex)) || {};
-      let html = `<h2>${days[dayIndex]}</h2><h3>Привычки</h3>`;
-      habits.forEach((habit, i) => {
-        const checked = saved["h" + i] ? "checked" : "";
-        html += `
-          <div class="habit">
-            <span>${habit}</span>
-            <input type="checkbox" id="h${i}" ${checked} onchange="saveHabit(${dayIndex})">
-          </div>`;
-      });
-      html += `<button onclick="saveHabit(${dayIndex})">Сохранить</button>`;
-      html += `<div class="motivation" id="motivationText"></div>`;
-      container.innerHTML = html;
-    }
-
-    function saveHabit(dayIndex) {
-      const data = {};
-      let count = 0;
-      habits.forEach((habit, i) => {
-        const isChecked = document.getElementById("h" + i).checked;
-        data["h" + i] = isChecked;
-        if (isChecked) count++;
-      });
-      localStorage.setItem("day_" + dayIndex, JSON.stringify(data));
-      localStorage.setItem("progress_" + dayIndex, count);
-      document.getElementById("motivationText").innerText = motivations[Math.floor(Math.random() * motivations.length)];
-      renderCalendar();
-    }
-
-    function switchDay(index) {
-      currentDayIndex = index;
-      document.querySelectorAll(".day-button").forEach((b, i) => {
-        b.classList.toggle("active", i === index);
-      });
-      renderHabits(index);
-    }
-
-    function renderCalendar() {
-      const cal = document.getElementById("calendarPreview");
-      cal.innerHTML = "";
-      for (let i = 0; i < 7; i++) {
-        const done = parseInt(localStorage.getItem("progress_" + i) || "0");
-        const pct = Math.round((done / habits.length) * 100);
-        const color = pct > 80 ? "#50AFA1" : pct > 50 ? "#F47965" : pct > 0 ? "#FD5B47" : "#ccc";
-        cal.innerHTML += `<div class="day-circle" style="background:${color}">${days[i][0]}</div>`;
-      }
-    }
-
-    const motivations = [
-      "Каждый чекбокс — как аплодисменты в зале!",
-      "Ты не обязана быть идеальной. Просто будь собой.",
-      "Прогресс — не спринт, а венский вальс.",
-      "Пусть день будет лёгким, как вдох утром.",
-      "Ты делаешь больше, чем думаешь!",
-    ];
-
-    // старт
-    renderHabits(currentDayIndex);
-    renderCalendar();
-  </script>
+        window.onload = function() {
+            const savedHabits = JSON.parse(localStorage.getItem('habitTracker'));
+            if (savedHabits) {
+                for (let i = 1; i <= 13; i++) {
+                    document.getElementById("habit" + i).checked = savedHabits["habit" + i];
+                }
+            }
+        }
+    </script>
 </body>
 </html>
