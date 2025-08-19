@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Вишлист LEGO</title>
+<style>
+body {
+font-family: Arial, sans-serif;
+margin: 0;
+padding: 10px;
+background-color: #f4f4f4;
+}
+h1 {
+font-size: 1.5em;
+text-align: center;
+}
+select, button {
+width: 100%;
+padding: 10px;
+margin-bottom: 10px;
+font-size: 1em;
+}
+.gift-list {
+display: grid;
+gap: 10px;
+}
+.gift-item {
+background: #fff;
+border: 1px solid #ddd;
+padding: 10px;
+border-radius: 5px;
+display: flex;
+justify-content: space-between;
+align-items: center;
+}
+.gift-item.taken {
+background: #e0e0e0;
+}
+.gift-item button {
+padding: 5px 10px;
+background: #28a745;
+color: #fff;
+border: none;
+border-radius: 3px;
+cursor: pointer;
+}
+.gift-item button.cancel {
+background: #dc3545;
+}
+.gift-item button:disabled {
+background: #ccc;
+cursor: not-allowed;
+}
+.alert {
+background: #ffe6e6;
+padding: 10px;
+margin-bottom: 10px;
+border-radius: 5px;
+text-align: center;
+}
+#toggleReserved {
+background: #007bff;
+color: #fff;
+}
+@media (max-width: 600px) {
+.gift-item {
+flex-direction: column;
+text-align: center;
+}
+.gift-item button {
+margin-top: 10px;
+}
+}
+</style>
+</head>
+<body>
+<h1>Вишлист LEGO</h1>
+<p id="status">Du hast 0 Geschenk(e) für Andreas ausgewählt! Wie schön!</p>
+<div id="alert" class="alert" style="display: none;"></div>
+<button id="toggleReserved">Reservierte Geschenke ausblenden</button>
+<select id="sort">
+<option value="price">Nach Preis</option>
+<option value="name">Nach Name</option>
+<option value="theme">Nach Thema</option>
+</select>
+<div class="gift-list" id="giftList"></div>
+
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+<script>
+const gifts = [
+{ code: "40460", name: "Rosen", price: 14.99, theme: "Pflanzen", link: "Geizhals Österreich" },
+{ code: "40725", name: "Kirschblüten", price: 14.99, theme: "Pflanzen", link: "Link nicht verfügbar" },
+{ code: "40747", name: "Narzissen", price: 14.99, theme: "Pflanzen", link: "Link nicht verfügbar" },
+{ code: "40647", name: "Lotusblumen", price: 14.99, theme: "Pflanzen", link: "Link nicht verfügbar" },
+{ code: "40524", name: "Sonnenblumen", price: 14.99, theme: "Pflanzen", link: "Link nicht verfügbar" },
+{ code: "31162", name: "Häschen (Creator 3-in-1)", price: 19.99, theme: "Tiere", link: "Geizhals Österreich" },
+{ code: "31163", name: "Graue Katze", price: 24.99, theme: "Tiere", link: "Link nicht verfügbar" },
+{ code: "31136", name: "Exotischer Papagei", price: 24.99, theme: "Tiere", link: "Link nicht verfügbar" },
+{ code: "31165", name: "Wilde Tiere: Pandafamilie", price: 39.99, theme: "Tiere", link: "Link nicht verfügbar" },
+{ code: "31147", name: "Retro Kamera", price: 19.99, theme: "Technik", link: "Link nicht verfügbar" },
+{ code: "31160", name: "Flieger: Rennflugzeug", price: 13.99, theme: "Transport", link: "Link nicht verfügbar" },
+{ code: "60426", name: "Dschungelforscher-Truck", price: 29.99, theme: "Transport", link: "Link nicht verfügbar" },
+{ code: "60407", name: "Doppeldeckerbus", price: 29.99, theme: "Transport", link: "Link nicht verfügbar" },
+{ code: "60447", name: "Offroad Geländewagen", price: 19.99, theme: "Transport", link: "Link nicht verfügbar" },
+{ code: "60454", name: "Abenteuer-Wohnmobil", price: 29.99, theme: "Transport", link: "Link nicht verfügbar" },
+{ code: "71828", name: "Lloyds Actionflitzer", price: 24.99, theme: "Transport", link: "Link nicht verfügbar" },
+{ code: "21275", name: "Das TNT-Dschungelhaus", price: 29.99, theme: "Minecraft", link: "Link nicht verfügbar" },
+{ code: "21274", name: "Begegnung mit dem Wächter", price: 19.99, theme: "Minecraft", link: "Geizhals Österreich" },
+{ code: "21178", name: "Die Fuchs-Lodge", price: 19.99, theme: "Minecraft", link: "Link nicht verfügbar" },
+{ code: "21260", name: "Der Kirschblütengarten", price: 27.99, theme: "Pflanzen", link: "Link nicht verfügbar" },
+{ code: "21259", name: "Die Piratenschiffreise", price: 14.99, theme: "Minecraft", link: "Link nicht verfügbar" },
+{ code: "21254", name: "Das Schildkrötenstrandhaus", price: 26.99, theme: "Minecraft", link: "Link nicht verfügbar" },
+{ code: "77070", name: "Durrr Burger", price: 13.99, theme: "Fortnite", link: "Link nicht verfügbar" },
+{ code: "77075", name: "Das Lager von Schali …", price: 19.99, theme: "Fortnite", link: "Link nicht verfügbar" },
+{ code: "76970", name: "Babydinosaurier Dolores Aquilops", price: 24.99, theme: "Tiere", link: "Geizhals Österreich" },
+{ code: "76967", name: "Little Eatie: T.Rex", price: 24.99, theme: "Tiere", link: "Geizhals Österreich" },
+{ code: "76962", name: "Baby Bumpy: Ankylosaurus", price: 24.99, theme: "Tiere", link: "Link nicht verfügbar" },
+{ code: "76448", name: "Fawkes™: Dumbledores Phönix", price: 19.99, theme: "Harry Potter", link: "Link nicht verfügbar" },
+{ code: "76446", name: "Abenteuer mit dem Fahrenden Ritter", price: 49.99, theme: "Harry Potter", link: "Link nicht verfügbar" },
+{ code: "76434", name: "Aragog im Verbotenen Wald™", price: 19.99, theme: "Harry Potter", link: "Geizhals Österreich" },
+{ code: "76431", name: "Schloss Hogwarts™: Zaubertrankunterricht", price: 39.99, theme: "Harry Potter", link: "Link nicht verfügbar" },
+{ code: "60442", name: "F1® Rennfahrer mit McLaren Rennauto", price: 12.99, theme: "Transport", link: "Link nicht verfügbar" }
+];
+
+const giftList = document.getElementById("giftList");
+const sortSelect = document.getElementById("sort");
+const status = document.getElementById("status");
+const alertBox = document.getElementById("alert");
+const toggleReserved = document.getElementById("toggleReserved");
+let showReserved = true;
+
+// Локальное хранилище для отслеживания выборов текущего пользователя
+let selectedGifts = JSON.parse(localStorage.getItem("selectedGifts")) || [];
+
+// Проверка статуса и обновление текста
+function updateStatus() {
+const userSelected = selectedGifts.length;
+status.textContent = `Du hast ${userSelected} Geschenk(e) für Andreas ausgewählt! Wie schön!`;
+}
+
+// Показ сообщения при превышении лимита
+function showAlert() {
+alertBox.style.display = "block";
+alertBox.innerHTML = `
+<p>Спасибо, но, пожалуйста, не надо так много подарков! Самое важное, что ты придешь на праздник! Андреас будет очень рад тебе!</p>
+<p>Vielen Dank, aber bitte nicht so viele Geschenke! Das Wichtigste ist, dass du zur Feier kommst! Andreas freut sich sehr auf dich!</p>
+`;
+setTimeout(() => {
+alertBox.style.display = "none";
+}, 5000);
+}
+
+// Рендеринг списка подарков
+async function renderGifts(sortBy = "price") {
+giftList.innerHTML = "";
+let sortedGifts = [...gifts];
+
+if (sortBy === "price") {
+sortedGifts.sort((a, b) => a.price - b.price);
+} else if (sortBy === "name") {
+sortedGifts.sort((a, b) => a.name.localeCompare(b.name));
+} else if (sortBy === "theme") {
+sortedGifts.sort((a, b) => a.theme.localeCompare(b.theme));
+}
+
+// Получение зарезервированных подарков из Firestore
+const snapshot = await db.collection("gifts").get();
+const takenGifts = {};
+snapshot.forEach(doc => {
+takenGifts[doc.id] = doc.data().userId;
+});
+
+sortedGifts.forEach(gift => {
+if (!showReserved && takenGifts[gift.code]) return; // Пропускаем зарезервированные, если скрыты
+
+const giftItem = document.createElement("div");
+giftItem.className = "gift-item";
+if (takenGifts[gift.code]) {
+giftItem.classList.add("taken");
+}
+
+const isSelectedByUser = selectedGifts.includes(gift.code);
+giftItem.innerHTML = `
+<div>
+<strong>${gift.name}</strong> (${gift.theme})<br>
+Код: ${gift.code}<br>
+Цена: ${gift.price} €<br>
+<a href="${gift.link === 'Geizhals Österreich' ? 'https://geizhals.at/?fs=' + gift.code : '#'}" target="_blank">
+${gift.link}
+</a>
+</div>
+<button ${takenGifts[gift.code] && !isSelectedByUser ? "disabled" : ""} class="${isSelectedByUser ? 'cancel' : ''}">
+${takenGifts[gift.code] ? (isSelectedByUser ? "Stornieren" : "Reserviert") : "Ich schenke!"}
+</button>
+`;
+
+const button = giftItem.querySelector("button");
+if (!takenGifts[gift.code] && selectedGifts.length < 3) {
+button.addEventListener("click", async () => {
+if (selectedGifts.length >= 3) {
+showAlert();
+return;
+}
+const userId = localStorage.getItem("userId") || generateUserId();
+localStorage.setItem("userId", userId);
+selectedGifts.push(gift.code);
+localStorage.setItem("selectedGifts", JSON.stringify(selectedGifts));
+await db.collection("gifts").doc(gift.code).set({ userId });
+renderGifts(sortSelect.value);
+updateStatus();
+});
+} else if (isSelectedByUser) {
+button.addEventListener("click", async () => {
+selectedGifts = selectedGifts.filter(id => id !== gift.code);
+localStorage.setItem("selectedGifts", JSON.stringify(selectedGifts));
+await db.collection("gifts").doc(gift.code).delete();
+renderGifts(sortSelect.value);
+updateStatus();
+});
+}
+
+giftList.appendChild(giftItem);
+});
+}
+
+// Генерация уникального ID для пользователя
+function generateUserId() {
+return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+const r = Math.random() * 16 | 0;
+return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+});
+}
+
+// Обработчик сортировки
+sortSelect.addEventListener("change", () => {
+renderGifts(sortSelect.value);
+});
+
+// Обработчик скрытия/показа зарезервированных подарков
+toggleReserved.addEventListener("click", () => {
+showReserved = !showReserved;
+toggleReserved.textContent = showReserved ? "Reservierte Geschenke ausblenden" : "Reservierte Geschenke anzeigen";
+renderGifts(sortSelect.value);
+});
+
+// Инициализация
+renderGifts();
+updateStatus();
+</script>
+</body>
+</html>
